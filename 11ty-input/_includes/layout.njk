@@ -6,8 +6,16 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Turning HTML into a video</title>
     <link rel="stylesheet" href="/assets/style.css" />
+    <script src="/assets/frame-control.js"></script>
   </head>
   <body>
-    {{ content | safe }}
+    {% set ttsData = content | convertHtmlToSpeech %}
+
+    {{ ttsData.annotatedHtml | safe }}
+
+    <script>
+      const bookmarks = {{ttsData.bookmarks | dump(2) | safe }};
+    </script>
+    <div id="narration-text"></div>
   </body>
 </html>

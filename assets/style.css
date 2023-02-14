@@ -6,10 +6,16 @@
   --padding: 3rem;
 
   --font-family: sans-serif;
-  --font-size: 2.5rem;
+  --font-size: 2rem;
   --line-height: 2;
 
   --video-outline-color: yellow;
+
+  --highlight-bg-color: rgb(167, 130, 195);
+  --highlight-text-color: black;
+
+  --narration-bg-color: rgba(255, 255, 255, 0.1);
+  --narration-text-color: white;
 }
 
 * {
@@ -57,4 +63,32 @@ body {
   font-size: var(--font-size);
 
   outline: 5px dashed var(--video-outline-color);
+
+  position: relative;
+}
+
+[data-bookmark-id]:not([data-visible="true"]) {
+  display: none;
+}
+
+[data-highlight="true"] {
+  background-color: var(--highlight-bg-color);
+  outline: 0.5rem solid var(--highlight-bg-color);
+  color: var(--highlight-text-color);
+}
+
+[data-highlight="true"]::marker {
+  color: var(--text-color);
+}
+
+#narration-text {
+  background-color: var(--narration-bg-color);
+  color: var(--narration-text-color);
+
+  width: 100%;
+  position: absolute;
+  bottom: 0;
+  left: 0;
+
+  padding: 1rem;
 }

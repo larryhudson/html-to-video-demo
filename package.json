@@ -11,6 +11,15 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "@11ty/eleventy": "^2.0.0"
+    "@11ty/eleventy": "^2.0.0",
+    "@11ty/eleventy-fetch": "^3.0.0",
+    "cheerio": "^1.0.0-rc.12",
+    "dotenv": "^16.0.3",
+    "get-audio-duration": "^3.1.1",
+    "html-entities": "^2.3.3",
+    "js-md5": "^0.7.3",
+    "microsoft-cognitiveservices-speech-sdk": "^1.25.1",
+    "node-static": "^0.7.11",
+    "puppeteer": "^19.7.0"
   }
 }
