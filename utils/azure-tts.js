@@ -52,6 +52,7 @@ async function convertSsmlToSpeech(ssml, options) {
     options.region
   );
 
+  // get the language from the start of the supplied voice name
   speechConfig.speechSynthesisLanguage = options.voiceName.slice(0, 5);
   speechConfig.speechSynthesisVoiceName = options.voiceName;
   speechConfig.speechSynthesisOutputFormat =
@@ -59,7 +60,6 @@ async function convertSsmlToSpeech(ssml, options) {
 
   const TMP_FOLDER_NAME = `.tmp-text-to-speech`;
 
-  //   TODO: write hook to delete the temp folder after build
   if (!fs.existsSync(TMP_FOLDER_NAME)) {
     fs.mkdirSync(TMP_FOLDER_NAME);
   }
@@ -70,8 +70,8 @@ async function convertSsmlToSpeech(ssml, options) {
 
   const synthesizer = new SpeechSynthesizer(speechConfig, audioConfig);
 
+  // save the timing data for when a bookmark is reached
   const bookmarks = [];
-
   synthesizer.bookmarkReached = (_, event) => {
     const startTime = event.audioOffset * 0.0000001;
     const startTimeRounded = parseFloat(startTime.toFixed(5));
@@ -81,9 +81,9 @@ async function convertSsmlToSpeech(ssml, options) {
     });
   };
 
-  // Generate MP3 with Azure API
-
   const audioArrayBuffer = await new Promise((resolve, reject) => {
+    // send the SSML to be converted
+    // SSML docs: https://learn.microsoft.com/en-us/azure/cognitive-services/speech-service/speech-synthesis-markup
     const ssmlText = `<speak xmlns="http://www.w3.org/2001/10/synthesis" xmlns:mstts="http://www.w3.org/2001/mstts" xmlns:emo="http://www.w3.org/2009/10/emotionml" version="1.0" xml:lang="${options.voiceName.slice(
       0,
       5
@@ -116,6 +116,7 @@ async function convertSsmlToSpeech(ssml, options) {
 
   const audio = Buffer.from(audioArrayBuffer);
 
+  // save the audio and the bookmarks to the cache
   await cachedAudio.save(audio, "buffer");
   await cachedBookmarks.save(bookmarks, "json");
 
@@ -125,10 +126,10 @@ async function convertSsmlToSpeech(ssml, options) {
   };
 }
 
-function convertHtmlToSsml(htmlContent, selector) {
+function convertHtmlToSsml(htmlContent, selectorToInclude) {
   const $ = cheerio.load(htmlContent);
 
-  const elementsToInclude = $(selector);
+  const elementsToInclude = $(selectorToInclude);
 
   const ssmlTags = [];
 
@@ -152,9 +153,8 @@ async function convertHtmlToSpeech(htmlContent, options) {
     options.includeSelector
   );
 
-  await fs.promises.writeFile("./ssml.html", ssml);
-
   // TODO: actually break it into chunks
+  // Azure TTS limit is 10 mins so need to create chunks of about 7000 characters.
   const chunks = [ssml];
 
   const audioAndTimings = await Promise.all(

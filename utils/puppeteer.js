@@ -5,7 +5,7 @@ const nodeStaticServer = require("node-static");
 const http = require("http");
 const { getAudioDurationInSeconds } = require("get-audio-duration");
 
-async function takeScreenshots({
+async function writeScreenshotsToStream({
   outputDir,
   serverPort,
   pageUrl,
@@ -13,7 +13,9 @@ async function takeScreenshots({
   framesPerSecond,
   videoHeight,
   videoWidth,
+  imagesStream,
 }) {
+  // create a static web server, so puppeteer can view the website
   const fileServer = new nodeStaticServer.Server(outputDir);
 
   const eleventyServer = http.createServer(function (request, response) {
@@ -24,14 +26,6 @@ async function takeScreenshots({
       .resume();
   });
 
-  const TMP_DIR_PATH = "./frames";
-
-  const tmpDirExists = fs.existsSync(TMP_DIR_PATH);
-
-  if (!tmpDirExists) {
-    await fs.promises.mkdir(TMP_DIR_PATH);
-  }
-
   eleventyServer.listen(serverPort);
 
   const AUDIO_DURATION = await getAudioDurationInSeconds(audioTrackPath);
@@ -39,12 +33,14 @@ async function takeScreenshots({
   const TOTAL_NUM_FRAMES = Number(
     (AUDIO_DURATION * framesPerSecond).toFixed(0)
   );
-  console.log("Video duration: ", AUDIO_DURATION);
 
   let currentFrame = 0;
 
+  // boot up the puppeteer browser
+
   const browser = await puppeteer.launch();
   const browserPage = await browser.newPage();
+
   await browserPage.setViewport({
     width: videoWidth,
     height: videoHeight,
@@ -54,7 +50,10 @@ async function takeScreenshots({
 
   // for each frame in the video
   while (currentFrame < TOTAL_NUM_FRAMES) {
-    // for each frame, adjust the HTML to add the highlight to the current word
+    // for each frame, navigate to the hash
+
+    // the 'hashchange' event will fire on the client side, adjusting the view
+    // see assets/frame-control.js for more details
 
     await browserPage.goto(
       `http://localhost:${serverPort}${pageUrl}#${currentFrame}`
@@ -65,20 +64,18 @@ async function takeScreenshots({
       quality: 100,
     });
 
-    console.log(`saving screenshot ${currentFrame} of ${TOTAL_NUM_FRAMES}`);
-
-    await fs.promises.writeFile(
-      `${TMP_DIR_PATH}/frame-${currentFrame}.jpg`,
-      pngBuffer
-    );
+    // write the image to the stream, which will be included in the video
+    imagesStream.write(pngBuffer, "utf-8");
 
     currentFrame++;
   }
 
+  // when we are done, shut down the browser, the static server and close the image stream
   browser.close();
   eleventyServer.close();
+  imagesStream.end();
 }
 
 module.exports = {
-  takeScreenshots,
+  writeScreenshotsToStream,
 };

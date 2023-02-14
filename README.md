@@ -1,5 +1,5 @@
 # Turning HTML into a video with Eleventy, Azure TTS, Puppeteer and ffmpeg
 
-## Step 4: Take screenshots with Puppeteer
+## Step 5: Turn screenshots into a video with ffmpeg
 
-This is the fourth step.
+This is the fifth step.
