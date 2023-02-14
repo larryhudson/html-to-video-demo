@@ -2,11 +2,10 @@
 
 This is a demo showing how you can create a video using HTML content. This demo uses:
 
-- Eleventy
-- Azure TTS
-- Puppeteer
-- ffmpeg
-- cheerio.
+- [Eleventy](https://www.11ty.dev/) for creating the static webpage
+- [Azure TTS](https://azure.microsoft.com/en-us/products/cognitive-services/text-to-speech/#documentation) for creating the audio version of the content
+- [Puppeteer](https://developer.chrome.com/docs/puppeteer/) for taking screenshots of each frame
+- [ffmpeg](https://ffmpeg.org/) for rendering those screenshots into a video.
 
 Documentation is a work in progress, but here are some quick notes about how it works:
 
