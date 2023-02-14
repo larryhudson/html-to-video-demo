@@ -76,9 +76,8 @@ async function convertSsmlToSpeech(ssml, options) {
     const startTime = event.audioOffset * 0.0000001;
     const startTimeRounded = parseFloat(startTime.toFixed(5));
     bookmarks.push({
-      type: "bookmarkReached",
       startTime: startTimeRounded,
-      text: event.text.trim(),
+      id: event.text.trim(),
     });
   };
 
@@ -134,8 +133,8 @@ function convertHtmlToSsml(htmlContent, selector) {
   const ssmlTags = [];
 
   $(elementsToInclude).each((index, elem) => {
-    const bookmarkId = `narration-${index}`;
-    $(elem).attr("data-narration-id", bookmarkId);
+    const bookmarkId = `bookmark-${index}`;
+    $(elem).attr("data-bookmark-id", bookmarkId);
     const textContent = $(elem).text();
 
     ssmlTags.push(`<bookmark mark="${bookmarkId}" />${encode(textContent)}`);

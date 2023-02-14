@@ -10,6 +10,9 @@
   --line-height: 2;
 
   --video-outline-color: yellow;
+
+  --highlight-bg-color: rgb(167, 130, 195);
+  --highlight-text-color: black;
 }
 
 * {
@@ -57,4 +60,14 @@ body {
   font-size: var(--font-size);
 
   outline: 5px dashed var(--video-outline-color);
+}
+
+[data-highlight="true"] {
+  background-color: var(--highlight-bg-color);
+  outline: 0.5rem solid var(--highlight-bg-color);
+  color: var(--highlight-text-color);
+}
+
+[data-highlight="true"]::marker {
+  color: var(--text-color);
 }

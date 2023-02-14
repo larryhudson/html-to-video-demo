@@ -1,5 +1,5 @@
 # Turning HTML into a video with Eleventy, Azure TTS, Puppeteer and ffmpeg
 
-## Step 2: Create the audio track with Azure TTS
+## Step 3: Sync up the webpage with audio
 
-This is the second step.
+This is the third step.
