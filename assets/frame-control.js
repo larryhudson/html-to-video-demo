@@ -34,6 +34,8 @@ function renderCurrentView() {
     );
     if (elem) {
       elem.setAttribute("data-highlight", "true");
+      document.querySelector("#narration-text").innerText =
+        elem.getAttribute("data-narration");
     }
   }
 }

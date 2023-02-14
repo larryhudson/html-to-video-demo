@@ -126,7 +126,7 @@ async function convertSsmlToSpeech(ssml, options) {
   };
 }
 
-function convertHtmlToSsml(htmlContent, selectorToInclude) {
+function convertHtmlToSsml(htmlContent, selectorToInclude, contentGetter) {
   const $ = cheerio.load(htmlContent);
 
   const elementsToInclude = $(selectorToInclude);
@@ -136,7 +136,7 @@ function convertHtmlToSsml(htmlContent, selectorToInclude) {
   $(elementsToInclude).each((index, elem) => {
     const bookmarkId = `bookmark-${index}`;
     $(elem).attr("data-bookmark-id", bookmarkId);
-    const textContent = $(elem).text();
+    const textContent = contentGetter($, elem);
 
     ssmlTags.push(`<bookmark mark="${bookmarkId}" />${encode(textContent)}`);
   });
@@ -150,7 +150,8 @@ function convertHtmlToSsml(htmlContent, selectorToInclude) {
 async function convertHtmlToSpeech(htmlContent, options) {
   const { ssml, annotatedHtml } = convertHtmlToSsml(
     htmlContent,
-    options.includeSelector
+    options.includeSelector,
+    options.contentGetter
   );
 
   // TODO: actually break it into chunks

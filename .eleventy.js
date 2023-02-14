@@ -18,7 +18,8 @@ module.exports = function (eleventyConfig) {
         region: process.env.AZURE_SPEECH_REGION,
         speed: "0%",
         lexiconUrl: null,
-        includeSelector: "h1,h2,h3,h4,p,li",
+        includeSelector: "[data-narration]",
+        contentGetter: ($, elem) => $(elem).attr("data-narration"),
       }
     );
 
