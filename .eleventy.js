@@ -1,5 +1,7 @@
 require("dotenv").config();
 const { convertHtmlToSpeech } = require("./utils/azure-tts.js");
+const { takeScreenshots } = require("./utils/puppeteer.js");
+
 const fs = require("fs");
 
 module.exports = function (eleventyConfig) {
@@ -36,6 +38,18 @@ module.exports = function (eleventyConfig) {
     if (tmpDirExists) {
       await fs.promises.rm(".tmp-text-to-speech", { recursive: true });
     }
+  });
+
+  eleventyConfig.on("eleventy.after", function () {
+    takeScreenshots({
+      outputDir: "11ty-output",
+      pageUrl: "/",
+      serverPort: 5050,
+      audioTrackPath: "./audio-track.mp3",
+      framesPerSecond: 30,
+      videoHeight: 720,
+      videoWidth: 1280,
+    });
   });
 
   return {
