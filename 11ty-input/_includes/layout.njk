@@ -8,6 +8,12 @@
     <link rel="stylesheet" href="/assets/style.css" />
   </head>
   <body>
-    {{ content | safe }}
+    {% set ttsData = content | convertHtmlToSpeech %}
+
+    {{ ttsData.annotatedHtml | safe }}
+
+    <script>
+      const bookmarks = {{ttsData.bookmarks | dump(2) | safe }};
+    </script>
   </body>
 </html>

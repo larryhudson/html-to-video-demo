@@ -2,3 +2,9 @@
 .cache
 node_modules
 package-lock.json
+.env
+ssml.html
+audio-track.mp3
+bookmarks.json
+.tmp-text-to-speech
+.DS_Store
